@@ -1,38 +1,46 @@
 package com.patricklutz.ba.client;
 
+import android.app.Activity;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.VideoView;
+
+import com.zerokol.views.JoystickView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        VideoView video = (VideoView) findViewById(R.id.video);
+        String path = "/storage/emulated/0/Download/AndroidCommercial.3gp";
+        video.setVideoPath(path);
+        video.start();
+
+        LayoutInflater inflater = getLayoutInflater();
+        getWindow().addContentView(inflater.inflate(R.layout.controls, null),
+                                    new ViewGroup.LayoutParams(
+                                            ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT
+                                    ));
+
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
+
+        joystick.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
+            @Override
+            public void onValueChanged(int i, int i1, int i2) {
+
+            }
+        }, JoystickView.DEFAULT_LOOP_INTERVAL);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
