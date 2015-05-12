@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center|center_vertical">
+
+
+    <RelativeLayout
+        android:layout_width="200dp"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/test"
+        android:layout_toEndOf="@+id/test"
+        android:layout_marginTop="220dp">
+
+        <Button
+            android:id="@+id/btnForward"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Forward"
+            android:layout_alignParentTop="true"
+            android:layout_alignEnd="@+id/btnBack" />
+
+        <Button
+            android:id="@+id/btnLeft"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="Left"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/btnRight"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="Right"
+            android:layout_alignTop="@+id/btnLeft"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Back"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/angry_btn"
+
+        android:text="Feuer!"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+
+        android:layout_width="100dip"
+        android:layout_height="100dip"
+
+        android:layout_gravity="center|center_vertical"
+
+        android:background="@drawable/buttonshape"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

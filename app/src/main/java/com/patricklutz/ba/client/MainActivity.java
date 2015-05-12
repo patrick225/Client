@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.zerokol.views.JoystickView;
 
 
 public class MainActivity extends Activity {
@@ -38,20 +37,6 @@ public class MainActivity extends Activity {
                                             ViewGroup.LayoutParams.MATCH_PARENT
                                     ));
 
-        JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
-
-        final TextView test = (TextView) findViewById(R.id.test);
-
-
-        joystick.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
-            @Override
-            public void onValueChanged(int i, int i1, int i2) {
-
-                test.setText(i + "  " + i1 + "  "  + i2);
-
-
-            }
-        }, JoystickView.DEFAULT_LOOP_INTERVAL);
     }
 
 }
