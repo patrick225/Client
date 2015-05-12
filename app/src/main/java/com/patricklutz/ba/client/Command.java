@@ -1,7 +1,7 @@
 package com.patricklutz.ba.client;
 
 /**
- * Modelclass for one singel Command to the Robot
+ * Modelclass for one single Command to the Robot
  *
  * Created by privat-patrick on 12.05.2015.
  */
