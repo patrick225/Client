@@ -19,7 +19,8 @@
             android:layout_height="50dp"
             android:text="Forward"
             android:layout_alignParentTop="true"
-            android:layout_alignEnd="@+id/btnBack" />
+            android:layout_alignEnd="@+id/btnBack"
+            android:onClick="goForward"/>
 
         <Button
             android:id="@+id/btnLeft"
@@ -27,7 +28,8 @@
             android:layout_height="70dp"
             android:text="Left"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:onClick="goLeft"/>
 
         <Button
             android:id="@+id/btnRight"
@@ -35,7 +37,8 @@
             android:layout_height="70dp"
             android:text="Right"
             android:layout_alignTop="@+id/btnLeft"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:onClick="goRight"/>
 
         <Button
             android:id="@+id/btnBack"
@@ -43,7 +46,8 @@
             android:layout_height="50dp"
             android:text="Back"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:onClick="goBack"/>
 
     </RelativeLayout>
 
