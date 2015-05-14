@@ -1,12 +1,17 @@
 package com.patricklutz.ba.client;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -28,12 +33,12 @@ public class MainActivity extends Activity {
         ImageView imgView = (ImageView) findViewById(R.id.imageview);
 
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-        Log.i("file", dir.getAbsolutePath() + "27918-affe-zeigt-stinkefinger.jpg");
         imgView.setImageBitmap(BitmapFactory.decodeFile(dir.getAbsolutePath() + "/27918-affe-zeigt-stinkefinger.jpg"));
 
-        cmdManager = new CommandManager(this);
-        cmdManager.start();
+        Intent intent = getIntent();
+
+        cmdManager = new CommandManager(this,
+                getChannel(intent.getIntExtra(MenuActivity.EXTRA_CHANNEL, MenuActivity.EXTRA_WLAN)));
 
         leftSeekbar = (SeekbarVertical) findViewById(R.id.seekBarLeft);
         rightSeekbar = (SeekbarVertical) findViewById(R.id.seekBarRight);
@@ -42,6 +47,34 @@ public class MainActivity extends Activity {
 
         leftSeekbar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
         rightSeekbar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
+    }
+
+    private Channel getChannel(int connection) {
+        Channel channel = null;
+        switch (connection) {
+            case MenuActivity.EXTRA_WLAN:
+                channel = new TCPClient(new Handler() {
+                    public void handleMessage(Message msg) {
+
+                        String message = "";
+                        switch (msg.arg1) {
+                            case Channel.STATE_CONNECTED:
+                                message = "Connected to Server!";
+                                break;
+                            case Channel.STATE_DISCONNECTED:
+                                message = "Connection refused!";
+                        }
+
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case MenuActivity.EXTRA_BLUETOOTH:
+                //@TODO bluetooth channel zurückgeben
+                break;
+
+        }
+        return channel;
     }
 
     final SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -71,6 +104,18 @@ public class MainActivity extends Activity {
 
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cmdManager.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cmdManager.stop();
+    }
 
 }
 

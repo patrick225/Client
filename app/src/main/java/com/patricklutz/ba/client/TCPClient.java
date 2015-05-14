@@ -2,6 +2,7 @@ package com.patricklutz.ba.client;
 
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -20,46 +21,23 @@ import java.nio.ByteBuffer;
  *
  * Created by privat-patrick on 12.05.2015.
  */
-public class TCPClient extends Thread {
+public class TCPClient extends Channel {
 
-    public static final int STATE_CONNECTED = 1;
-    public static final int STATE_DISCONNECTED = 2;
+
 
     private String serverMessage;
     public static final String SERVERIP = "192.168.178.37";
     public static final int SERVERPORT = 4443;
-    private OnMessageReceived messageListener = null;
     private boolean running = false;
 
-    private int state;
 
-    private Handler handler;
+    private DataOutputStream out;
+    private BufferedReader in;
 
-    DataOutputStream out;
-    BufferedReader in;
+    public TCPClient(Handler handler) {
+        super(handler);
 
-    public TCPClient(OnMessageReceived listener, Handler handler) {
-        messageListener = listener;
-        this.handler = handler;
         state = STATE_DISCONNECTED;
-        start();
-    }
-    public boolean send(Command command) {
-
-        if (out != null && state == STATE_CONNECTED) {
-            byte[] data = command.getCommandData();
-            try {
-                out.write(data);
-                out.flush();
-                return true;
-            } catch (IOException e) {
-                Log.e("TcpClient", e.getMessage());
-                state = STATE_DISCONNECTED;
-                notifyHandler(STATE_DISCONNECTED);
-                return false;
-            }
-        }
-        return false;
     }
 
 
@@ -83,7 +61,7 @@ public class TCPClient extends Thread {
                     serverMessage = in.readLine();
 
                     if (serverMessage != null) {
-                        messageListener.messageReceived(serverMessage);
+                        //@TODO incoming messages?
                     }
                 }
                 out.close();
@@ -100,14 +78,32 @@ public class TCPClient extends Thread {
         }
     }
 
+    @Override
+    public boolean send(byte[] data) {
+
+        if (out != null && state == STATE_CONNECTED) {
+            try {
+                out.write(data);
+                out.flush();
+                return true;
+            } catch (IOException e) {
+                Log.e("TcpClient", e.getMessage());
+                state = STATE_DISCONNECTED;
+                notifyHandler(STATE_DISCONNECTED);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean open() {
+        start();
+        return true;
+    }
+
+    @Override
     public void close() {
         running = false;
     }
-
-    private void notifyHandler(int state) {
-        Message msg = Message.obtain();
-        msg.arg1 = state;
-        handler.sendMessage(msg);
-    }
-
 }

@@ -30,23 +30,28 @@ public class CommandManager {
     private long lastShot;
 
     private Command command;
-    private TCPClient tcpClient;
+    private Channel channel;
     private Context mainContext;
 
 
-    public CommandManager(Context context) {
+    public CommandManager(Context context, Channel channel) {
         mainContext = context;
+        this.channel = channel;
 
         command = new Command(0,0,false);
         lastShot = 0;
-
-        tcpClient = new TCPClient(msgReceived, handler);
         SensorEventListener shotDetector = new ShotDetector(context, this);
 
     }
 
     public void start() {
+        channel.start();
         timer.schedule(task, 0, PERIOD);
+    }
+
+    public void stop() {
+        timer.cancel();
+        channel.close();
     }
     public void setShot(boolean shot) {
         command.setShot(shot);
@@ -60,28 +65,8 @@ public class CommandManager {
         command.setVeloRight(velocity);
     }
 
-    final Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
 
-            String message = "";
-            switch (msg.arg1) {
-                case TCPClient.STATE_CONNECTED:
-                    message = "Connected to Server!";
-                    break;
-                case TCPClient.STATE_DISCONNECTED:
-                    message = "Connection refused!";
-            }
 
-            Toast.makeText(mainContext, message, Toast.LENGTH_LONG).show();
-        }
-    };
-
-    final OnMessageReceived msgReceived = new OnMessageReceived() {
-        @Override
-        public void messageReceived(String message) {
-            Log.i("tcpIn", message);
-        }
-    };
 
     final TimerTask task = new TimerTask() {
         @Override
@@ -95,7 +80,7 @@ public class CommandManager {
             if (command.isShot())
                 lastShot = System.currentTimeMillis();
 
-            tcpClient.send(command);
+            channel.send(command.getCommandData());
         }
     };
 
