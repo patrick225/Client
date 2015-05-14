@@ -1,59 +1,47 @@
 package com.patricklutz.ba.client;
 
+
+import java.nio.ByteBuffer;
+
 /**
- * Modelclass for one single Command to the Robot
+ * Modelclass for one single Command to the Server
+ *
  *
  * Created by privat-patrick on 12.05.2015.
  */
 public class Command {
 
-    private static final int size = 6;
+    private int veloLeft;
+    private int veloRight;
 
-    private byte[] command;
+    private boolean shot;
 
-    public Command() {
-        command = new byte[size];
-        command[0] = Byte.valueOf("0xFF");
-
-        for (int i=0; i<size; i++) {
-            command[i] = Byte.valueOf("0x00");
-        }
+    public Command(int veloLeft, int veloRight, boolean shot) {
+        this.veloLeft = veloLeft;
+        this.veloRight = veloRight;
+        this.shot = shot;
     }
 
-    public void setCamera(byte cam) {
-        command[1] = cam;
+    public void setVeloLeft(int veloLeft) {
+        this.veloLeft = veloLeft;
+    }
+    public void setVeloRight(int veloRight) {
+        this.veloRight = veloRight;
+    }
+    public void setShot(boolean shot) {
+        this.shot = shot;
     }
 
-    public void setKick(byte kick) {
-        command[2] = kick;
+    public int getVeloRight() {
+        return veloRight;
     }
 
-    public void setKick(boolean kick) {
-        if (kick) {
-            command[2] = Byte.valueOf("0x01");
-        } else {
-            command[2] = Byte.valueOf("0x00");
-        }
+    public boolean isShot() {
+        return shot;
     }
 
-    public void setMLeft(byte motor) {
-        command[3] = motor;
+    public int getVeloLeft() {
+
+        return veloLeft;
     }
-
-    public void setMLeft(int motor) {
-
-    }
-
-    public void setMRight(byte motor) {
-        command[4] = motor;
-    }
-
-    public void setMRight(int motor) {
-
-    }
-
-    public void setChecksum(byte checksum) {
-        command[5] = checksum;
-    }
-
 }

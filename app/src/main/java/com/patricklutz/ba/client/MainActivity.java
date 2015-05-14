@@ -30,13 +30,7 @@ public class MainActivity extends Activity {
         Log.i("file", dir.getAbsolutePath() + "27918-affe-zeigt-stinkefinger.jpg");
         imgView.setImageBitmap(BitmapFactory.decodeFile(dir.getAbsolutePath() + "/27918-affe-zeigt-stinkefinger.jpg"));
 
-        SensorEventListener shotListener = new ShotDetector();
-
-        SensorManager sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensorMgr.registerListener(shotListener, sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_GAME);
-
-
+        CommandManager cmdManager = new CommandManager(this);
     }
 
 }

@@ -1,8 +1,10 @@
 package com.patricklutz.ba.client;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.Log;
 
 /**
@@ -16,6 +18,16 @@ public class ShotDetector implements SensorEventListener {
     long lastUpdate = 0;
     double x = 0, y = 0, z = 0;
     double last_x = 0, last_y = 0, last_z = 0;
+
+    CommandManager callback;
+
+    public ShotDetector(Context context, CommandManager callback) {
+        super();
+        SensorManager sensorMgr = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensorMgr.registerListener(this, sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_GAME);
+        this.callback = callback;
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -34,6 +46,8 @@ public class ShotDetector implements SensorEventListener {
 
                 if (speed > SHAKE_THRESHOLD) {
                     Log.d("Sensor", "shake detected speed: " + speed);
+                    callback.setShot(true);
+
                 }
                 last_x = x;
                 last_y = y;
