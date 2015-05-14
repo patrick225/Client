@@ -7,6 +7,7 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -41,9 +42,12 @@ public class CommandManager {
 
         tcpClient = new TCPClient(msgReceived, handler);
         SensorEventListener shotDetector = new ShotDetector(context, this);
-        timer.schedule(task, 0, PERIOD);
+
     }
 
+    public void start() {
+        timer.schedule(task, 0, PERIOD);
+    }
     public void setShot(boolean shot) {
         command.setShot(shot);
     }
@@ -60,10 +64,15 @@ public class CommandManager {
         public void handleMessage(Message msg) {
 
             String message = "";
-            if (msg.arg1 == TCPClient.STATE_CONNECTED)
-                message = "Connected to Server!";
+            switch (msg.arg1) {
+                case TCPClient.STATE_CONNECTED:
+                    message = "Connected to Server!";
+                    break;
+                case TCPClient.STATE_DISCONNECTED:
+                    message = "Connection refused!";
+            }
 
-            Toast.makeText(mainContext, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainContext, message, Toast.LENGTH_LONG).show();
         }
     };
 
@@ -89,4 +98,6 @@ public class CommandManager {
             tcpClient.send(command);
         }
     };
+
+
 }

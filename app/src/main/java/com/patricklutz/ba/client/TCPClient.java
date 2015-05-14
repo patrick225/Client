@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -22,28 +23,43 @@ import java.nio.ByteBuffer;
 public class TCPClient extends Thread {
 
     public static final int STATE_CONNECTED = 1;
+    public static final int STATE_DISCONNECTED = 2;
 
     private String serverMessage;
     public static final String SERVERIP = "192.168.178.37";
-//    public static final String SERVERIP = "127.0.0.2";
     public static final int SERVERPORT = 4443;
     private OnMessageReceived messageListener = null;
     private boolean running = false;
 
+    private int state;
+
     private Handler handler;
 
-    PrintWriter out;
+    DataOutputStream out;
     BufferedReader in;
 
     public TCPClient(OnMessageReceived listener, Handler handler) {
         messageListener = listener;
         this.handler = handler;
+        state = STATE_DISCONNECTED;
         start();
     }
     public boolean send(Command command) {
 
-        //@TODO überlegen wie ich Commands sende
-        return true;
+        if (out != null && state == STATE_CONNECTED) {
+            byte[] data = command.getCommandData();
+            try {
+                out.write(data);
+                out.flush();
+                return true;
+            } catch (IOException e) {
+                Log.e("TcpClient", e.getMessage());
+                state = STATE_DISCONNECTED;
+                notifyHandler(STATE_DISCONNECTED);
+                return false;
+            }
+        }
+        return false;
     }
 
 
@@ -56,9 +72,11 @@ public class TCPClient extends Thread {
 
             Socket socket = new Socket(serverAddr, SERVERPORT);
             notifyHandler(STATE_CONNECTED);
+            state = STATE_CONNECTED;
 
             try {
-                out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
+
+                out = new DataOutputStream(socket.getOutputStream());
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 while(running) {
@@ -72,6 +90,8 @@ public class TCPClient extends Thread {
                 in.close();
 
             } catch(IOException e) {
+                notifyHandler(STATE_DISCONNECTED);
+                state = STATE_DISCONNECTED;
                 Log.e("TCPClient", e.getMessage());
             }
             socket.close();

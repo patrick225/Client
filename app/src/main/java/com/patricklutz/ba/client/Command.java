@@ -1,6 +1,8 @@
 package com.patricklutz.ba.client;
 
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -11,6 +13,7 @@ import java.nio.ByteBuffer;
  */
 public class Command {
 
+    private static final int packagesize = 3;
     private int veloLeft;
     private int veloRight;
 
@@ -43,5 +46,23 @@ public class Command {
     public int getVeloLeft() {
 
         return veloLeft;
+    }
+
+    public byte[] getCommandData() {
+
+        byte[] data = new byte[packagesize];
+
+        data[0] = (byte) veloLeft;
+        data[1] = (byte) veloRight;
+
+        if (shot)
+            data[2] = 0x01;
+        else
+            data[2] = 0x00;
+
+        Log.d("data", "debug");
+
+
+        return data;
     }
 }
