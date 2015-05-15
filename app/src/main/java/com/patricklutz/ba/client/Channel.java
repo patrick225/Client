@@ -15,11 +15,17 @@ public abstract class Channel extends Thread {
     public static final int STATE_CONNECTED = 1;
     public static final int STATE_DISCONNECTED = 2;
 
+    public int TYPE;
+
+    public static final int TYPE_WLAN = 12;
+    public static final int TYPE_BLUETOOTH = 13;
+
     protected Handler handler;
     protected int state;
 
-    public Channel(Handler handler) {
+    public Channel(Handler handler, int type) {
         this.handler = handler;
+        this.TYPE = type;
     }
 
     protected void notifyHandler(int state) {
@@ -28,6 +34,11 @@ public abstract class Channel extends Thread {
         handler.sendMessage(msg);
     }
 
+    protected Handler getHandler() {
+        return handler;
+    }
+
+    public abstract Channel getInstance(Handler handler);
 
 
     public abstract void run();

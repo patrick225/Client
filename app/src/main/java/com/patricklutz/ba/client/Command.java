@@ -60,9 +60,6 @@ public class Command {
         else
             data[2] = 0x00;
 
-        Log.d("data", "debug");
-
-
         return data;
     }
 }

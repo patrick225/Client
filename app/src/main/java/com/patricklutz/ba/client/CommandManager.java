@@ -10,6 +10,8 @@ import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,8 +47,11 @@ public class CommandManager {
     }
 
     public void start() {
-        channel.start();
-        timer.schedule(task, 0, PERIOD);
+        Handler handler = channel.getHandler();
+        channel = channel.getInstance(handler);
+        channel.open();
+        timer = new Timer("commandTimer");
+        timer.schedule(new DoFrequently(), 0, PERIOD);
     }
 
     public void stop() {
@@ -67,8 +72,8 @@ public class CommandManager {
 
 
 
+    private class DoFrequently extends TimerTask {
 
-    final TimerTask task = new TimerTask() {
         @Override
         public void run() {
 
@@ -82,7 +87,6 @@ public class CommandManager {
 
             channel.send(command.getCommandData());
         }
-    };
-
+    }
 
 }

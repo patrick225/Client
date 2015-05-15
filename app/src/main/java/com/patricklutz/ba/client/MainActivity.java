@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-
+//@TODO onResume und onStop anschauen! da krachts
 public class MainActivity extends Activity {
 
 
@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         Intent intent = getIntent();
 
         cmdManager = new CommandManager(this,
-                getChannel(intent.getIntExtra(MenuActivity.EXTRA_CHANNEL, MenuActivity.EXTRA_WLAN)));
+                getChannel(intent.getIntExtra(MenuActivity.EXTRA_CHANNEL, Channel.TYPE_WLAN)));
 
         leftSeekbar = (SeekbarVertical) findViewById(R.id.seekBarLeft);
         rightSeekbar = (SeekbarVertical) findViewById(R.id.seekBarRight);
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     private Channel getChannel(int connection) {
         Channel channel = null;
         switch (connection) {
-            case MenuActivity.EXTRA_WLAN:
+            case Channel.TYPE_WLAN:
                 channel = new TCPClient(new Handler() {
                     public void handleMessage(Message msg) {
 
@@ -69,8 +69,8 @@ public class MainActivity extends Activity {
                     }
                 });
                 break;
-            case MenuActivity.EXTRA_BLUETOOTH:
-                //@TODO bluetooth channel zurückgeben
+            case Channel.TYPE_BLUETOOTH:
+                //@TODO bluetooth channel zurueckgeben
                 break;
 
         }

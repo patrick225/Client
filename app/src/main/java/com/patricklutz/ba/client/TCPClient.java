@@ -31,13 +31,19 @@ public class TCPClient extends Channel {
     private boolean running = false;
 
 
+    private Socket socket;
     private DataOutputStream out;
     private BufferedReader in;
 
     public TCPClient(Handler handler) {
-        super(handler);
+        super(handler, TYPE_WLAN);
 
         state = STATE_DISCONNECTED;
+    }
+
+    @Override
+    public Channel getInstance(Handler handler) {
+        return new TCPClient(handler);
     }
 
 
@@ -48,7 +54,7 @@ public class TCPClient extends Channel {
         try {
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-            Socket socket = new Socket(serverAddr, SERVERPORT);
+            socket = new Socket(serverAddr, SERVERPORT);
             notifyHandler(STATE_CONNECTED);
             state = STATE_CONNECTED;
 
@@ -64,8 +70,6 @@ public class TCPClient extends Channel {
                         //@TODO incoming messages?
                     }
                 }
-                out.close();
-                in.close();
 
             } catch(IOException e) {
                 notifyHandler(STATE_DISCONNECTED);
@@ -90,6 +94,7 @@ public class TCPClient extends Channel {
                 Log.e("TcpClient", e.getMessage());
                 state = STATE_DISCONNECTED;
                 notifyHandler(STATE_DISCONNECTED);
+
                 return false;
             }
         }
@@ -105,5 +110,14 @@ public class TCPClient extends Channel {
     @Override
     public void close() {
         running = false;
+        try {
+            socket.close();
+            out.close();
+            in.close();
+            state = STATE_DISCONNECTED;
+        }catch (IOException e) {
+            Log.e("TcpClient", e.getMessage());
+        }
+
     }
 }
