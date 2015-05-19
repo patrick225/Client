@@ -80,6 +80,7 @@ public class TCPClient extends Channel {
             socket.close();
         } catch (IOException e) {
             Log.e("TCPClient", e.getMessage());
+            notifyHandler(STATE_DISCONNECTED);
         }
     }
 
@@ -112,9 +113,11 @@ public class TCPClient extends Channel {
     public void close() {
         running = false;
         try {
-            socket.close();
-            out.close();
-            in.close();
+            if (socket != null) {
+                socket.close();
+                out.close();
+                in.close();
+            }
             state = STATE_DISCONNECTED;
         }catch (IOException e) {
             Log.e("TcpClient", e.getMessage());

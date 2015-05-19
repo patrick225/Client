@@ -56,16 +56,19 @@ public class MainActivity extends Activity {
                 channel = new TCPClient(new Handler() {
                     public void handleMessage(Message msg) {
 
-                        String message = "";
+                        String message;
                         switch (msg.arg1) {
                             case Channel.STATE_CONNECTED:
                                 message = "Connected to Server!";
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                 break;
                             case Channel.STATE_DISCONNECTED:
                                 message = "Connection refused!";
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getApplicationContext(),MenuActivity.class);
+                                startActivity(intent);
+                                break;
                         }
-
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                     }
                 });
                 break;
