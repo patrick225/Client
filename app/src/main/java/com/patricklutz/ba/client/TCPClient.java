@@ -26,9 +26,10 @@ public class TCPClient extends Channel {
 
 
     private String serverMessage;
-    public static final String SERVERIP = "192.168.178.37";
-    public static final int SERVERPORT = 4443;
+    public static final String SERVERIP = "134.60.135.172";
+    public static final int SERVERPORT = 55055;
     private boolean running = false;
+
 
 
     private Socket socket;
