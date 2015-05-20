@@ -136,29 +136,41 @@ public class TCPClient extends Channel {
         private DatagramSocket socket;
         private DatagramPacket packet;
 
+        private final int TIMEOUT = 3000;
+        private final int TRANSMIT_TRIES = 3;
+
 
         @Override
         protected String doInBackground(Void... params) {
 
-            Log.i("tcpclient", "doInBackground");
             try {
                 InetAddress host = InetAddress.getByName(getBroadcastIp());
                 socket = new DatagramSocket(null);
                 socket.setBroadcast(true);
+                socket.setSoTimeout(TIMEOUT);
 
                 packet = new DatagramPacket(new byte[0],0,host, SERVERPORT);
-                Log.i("tcpclient", "now send::");
-                socket.send(packet);
-                Log.i("tcpclient", "sent.");
-                Log.i("tcpclient", "receive..");
-                socket.receive(packet);
-                Log.i("tcpclient", "received.!");
-                socket.close();
 
+
+                int countFails = 0;
+                boolean success = false;
+                while(!success && countFails < TRANSMIT_TRIES) {
+                    try {
+                        socket.send(packet);
+                        socket.receive(packet);
+                        success = true;
+                    } catch (IOException e) {
+                        countFails++;
+                        Log.e("tcpclient", e.getMessage());
+                    }
+                }
+                socket.close();
+                if (!success) {
+                    throw new IOException("Cant get IP from Server");
+                }
 
                 String result = packet.getAddress().toString();
                 result = result.replace("/", "");
-                Log.i("tcpclient", result);
 
                 return result;
 
@@ -176,7 +188,7 @@ public class TCPClient extends Channel {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                Log.i("tcpclient", result);
+                Log.i("tcpclient", "ServerIP: " + result);
                 if (result.matches("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"))
                     SERVERIP = result;
                 else
