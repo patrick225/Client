@@ -1,33 +1,35 @@
 package com.patricklutz.ba.client;
 
+import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Message;
-import android.os.Parcel;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
-import java.nio.ByteBuffer;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * Class for TCP Connection to the Server
+ *
+ * Serverport : 55055
  *
  * Created by privat-patrick on 12.05.2015.
  */
 public class TCPClient extends Channel {
 
-
-
     private String serverMessage;
-    public static final String SERVERIP = "134.60.135.172";
-    public static final int SERVERPORT = 55055;
+    private static String SERVERIP;
+    private static final int SERVERPORT = 55055;
     private boolean running = false;
 
 
@@ -105,7 +107,7 @@ public class TCPClient extends Channel {
 
     @Override
     public boolean open() {
-        start();
+        new GetServerIPTask().execute();
         return true;
     }
 
@@ -123,5 +125,99 @@ public class TCPClient extends Channel {
             Log.e("TcpClient", e.getMessage());
         }
 
+    }
+
+
+    /**
+     * Initialising Task to get ServerIP dynamic
+     */
+    class GetServerIPTask extends AsyncTask<Void, Void, String> {
+
+        private DatagramSocket socket;
+        private DatagramPacket packet;
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            Log.i("tcpclient", "doInBackground");
+            try {
+                InetAddress host = InetAddress.getByName(getBroadcastIp());
+                socket = new DatagramSocket(null);
+                socket.setBroadcast(true);
+
+                packet = new DatagramPacket(new byte[0],0,host, SERVERPORT);
+                Log.i("tcpclient", "now send::");
+                socket.send(packet);
+                Log.i("tcpclient", "sent.");
+                Log.i("tcpclient", "receive..");
+                socket.receive(packet);
+                Log.i("tcpclient", "received.!");
+                socket.close();
+
+
+                String result = packet.getAddress().toString();
+                result = result.replace("/", "");
+                Log.i("tcpclient", result);
+
+                return result;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                Log.i("tcpclient", result);
+                if (result.matches("(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"))
+                    SERVERIP = result;
+                else
+                    Log.e("result", "received ip in wrong format");
+                start();
+            }
+
+        }
+
+
+        /**
+         * Get BroadcastIp of corresponding Subnet
+         *
+         * @return String broadcastIp,
+         *          Null on Error
+         */
+        private String getBroadcastIp() {
+            String broadcastIp = "";
+            try {
+                Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                while (interfaces.hasMoreElements()) {
+                    NetworkInterface networkInterface = interfaces.nextElement();
+                    if (networkInterface.isLoopback())
+                        continue;    // Don't want to broadcast to the loopback interface
+                    for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                        InetAddress broadcast = interfaceAddress.getBroadcast();
+                        if (broadcast == null)
+                            continue;
+                        broadcastIp = broadcast.toString().replace("/", "");
+                        Log.i("tcpclient", broadcastIp);
+
+                        return broadcastIp;
+                    }
+
+                }
+            } catch (Exception e) {
+                Log.e("tcpclient", "Error while getting BroadcastIp");
+                Log.e("tcpclient", e.getMessage());
+            }
+            return null;
+
+        }
     }
 }
