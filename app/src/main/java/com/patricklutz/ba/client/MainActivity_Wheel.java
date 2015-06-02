@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -194,6 +195,16 @@ public class MainActivity_Wheel extends Activity {
         double ratio = (Math.abs(angle) / 60) + 1;
 
         return Math.min(ratio, 1.5);
+    }
+
+
+    /**
+     * Button on-click to shoot
+     *
+     * @param view
+     */
+    public void setFire(View view) {
+        cmdManager.setShot(true);
     }
 
 }
