@@ -21,4 +21,30 @@
         android:text="Connect via Bluetooth"
         android:layout_below="@id/buttonWlan"/>
 
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Steuerung1"
+            android:id="@+id/radioSteuerung1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:layout_gravity="right" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Steuerung2"
+            android:id="@+id/radioSteuerung2"
+            android:layout_below="@id/radioSteuerung1"
+            android:layout_alignParentEnd="true"
+            android:checked="false"
+            android:layout_gravity="right" />
+    </RadioGroup>
+
 </RelativeLayout>

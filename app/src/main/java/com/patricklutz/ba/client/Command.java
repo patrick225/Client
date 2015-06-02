@@ -1,10 +1,6 @@
 package com.patricklutz.ba.client;
 
 
-import android.util.Log;
-
-import java.nio.ByteBuffer;
-
 /**
  * Modelclass for one single Command to the Server
  *
@@ -16,6 +12,8 @@ public class Command {
     private static final int packagesize = 3;
     private int veloLeft;
     private int veloRight;
+
+
 
     private boolean shot;
 

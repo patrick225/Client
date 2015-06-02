@@ -161,7 +161,7 @@ public class TCPClient extends Channel {
                         success = true;
                     } catch (IOException e) {
                         countFails++;
-                        Log.e("tcpclient", e.getMessage());
+//                        Log.e("tcpclient", e.getMessage());
                     }
                 }
                 socket.close();
