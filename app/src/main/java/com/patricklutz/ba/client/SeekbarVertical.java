@@ -6,16 +6,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
 
-/**
- * Custom Seekbar to allow vertical orientation
- *
- * Created by privat-patrick on 13.05.2015.
- */
-import android.content.Context;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
 
+/**
+ * Own Implementation of Seekbar
+ *
+ * @author privat-patrick
+ */
 public class SeekbarVertical extends SeekBar {
 
     public SeekbarVertical(Context context) {

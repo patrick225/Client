@@ -1,21 +1,15 @@
 package com.patricklutz.ba.client;
 
 import android.content.Context;
-import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.SeekBar;
-import android.widget.Toast;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * Class to manage outgoing Commands.
+ *
  * Created by privat-patrick on 14.05.2015.
  */
 public class CommandManager {
@@ -23,10 +17,14 @@ public class CommandManager {
 
     private Timer timer = new Timer("commandTimer");
 
-    // period to send commands to server (milliseconds)
+    /**
+     * period to send commands to server (milliseconds)
+     */
     private static final long PERIOD = 100;
 
-    // minimum time, between two shots are sent
+    /**
+     * minimum time, between two shots are sent
+     */
     private static final long SHOTDELAY = 500;
 
     private long lastShot;
@@ -46,6 +44,10 @@ public class CommandManager {
 
     }
 
+
+    /**
+     * Starts to send frequently commands to server
+     */
     public void start() {
         Handler handler = channel.getHandler();
         channel = channel.getInstance(handler);
@@ -54,22 +56,29 @@ public class CommandManager {
         timer.schedule(new DoFrequently(), 0, PERIOD);
     }
 
+
+    /**
+     * Stop sending commands to server
+     */
     public void stop() {
         timer.cancel();
         channel.close();
     }
+
+
     public void setShot(boolean shot) {
         command.setShot(shot);
     }
+
 
     public void setVeloLeft(int velocity) {
         command.setVeloLeft(velocity);
     }
 
+
     public void setVeloRight(int velocity) {
         command.setVeloRight(velocity);
     }
-
 
 
     private class DoFrequently extends TimerTask {

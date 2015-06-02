@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 /**
- * Class for TCP Connection to the Server
+ * Singleton Class for TCP Connection to the Server
  *
  * Serverport : 55055
  *

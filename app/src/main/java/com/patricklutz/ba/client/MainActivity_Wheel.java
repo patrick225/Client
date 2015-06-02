@@ -18,6 +18,11 @@ import android.widget.Toast;
 import java.io.File;
 
 
+/**
+ * Second Controlltype via Orientation-Sensor
+ *
+ * @author privat-patrick
+ */
 public class MainActivity_Wheel extends Activity {
 
 
@@ -55,8 +60,12 @@ public class MainActivity_Wheel extends Activity {
     }
 
 
-
-
+    /**
+     * Returns a working Channel for the given Connectiontype
+     *
+     * @param connection type of connection
+     * @return working channel
+     */
     private Channel getChannel(int connection) {
         Channel channel = null;
         switch (connection) {
@@ -89,7 +98,6 @@ public class MainActivity_Wheel extends Activity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -97,6 +105,7 @@ public class MainActivity_Wheel extends Activity {
         snsMngr.registerListener(sensorListener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
         cmdManager.start();
     }
+
 
     @Override
     protected void onStop() {
@@ -106,6 +115,7 @@ public class MainActivity_Wheel extends Activity {
 
 
     }
+
 
     final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
@@ -125,6 +135,7 @@ public class MainActivity_Wheel extends Activity {
 
         }
     };
+
 
     private void setCommand() {
         float[] R1 = new float[9];
@@ -150,6 +161,7 @@ public class MainActivity_Wheel extends Activity {
         cmdManager.setVeloRight(getVeloRight(values[1]));
     }
 
+
     private int getVeloLeft (double angle) {
 
         int veloLeft;
@@ -161,6 +173,7 @@ public class MainActivity_Wheel extends Activity {
         }
         return veloLeft;
     }
+
 
     private int getVeloRight (double angle) {
 
@@ -174,6 +187,7 @@ public class MainActivity_Wheel extends Activity {
         }
         return veloRight;
     }
+
 
     private double getVeloRatio (double angle) {
 

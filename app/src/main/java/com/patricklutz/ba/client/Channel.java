@@ -2,12 +2,10 @@ package com.patricklutz.ba.client;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.io.Serializable;
 
 /**
+ * Abstract class to provide a Channel for Data-transmission
+ *
  * Created by privat-patrick on 14.05.2015.
  */
 public abstract class Channel extends Thread {
@@ -28,19 +26,19 @@ public abstract class Channel extends Thread {
         this.TYPE = type;
     }
 
+
     protected void notifyHandler(int state) {
         Message msg = Message.obtain();
         msg.arg1 = state;
         handler.sendMessage(msg);
     }
 
+
     protected Handler getHandler() {
         return handler;
     }
 
     public abstract Channel getInstance(Handler handler);
-
-
     public abstract void run();
     public abstract boolean open();
     public abstract void close();

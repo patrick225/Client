@@ -3,19 +3,21 @@ package com.patricklutz.ba.client;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.io.File;
 
-//@TODO onResume und onStop anschauen! da krachts
+/**
+ * This is the first Controlltype via Seekbars for left and right motor
+ *
+ * @author privat-patrick
+ */
 public class MainActivity extends Activity {
 
 
@@ -49,6 +51,13 @@ public class MainActivity extends Activity {
         rightSeekbar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
     }
 
+
+    /**
+     * Returns a working Channel for the given Connectiontype
+     *
+     * @param connection type of connection
+     * @return working channel
+     */
     private Channel getChannel(int connection) {
         Channel channel = null;
         switch (connection) {
@@ -80,6 +89,7 @@ public class MainActivity extends Activity {
         return channel;
     }
 
+
     final SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         private static final int SLIDER_ZEROPOINT = 50;
@@ -108,11 +118,13 @@ public class MainActivity extends Activity {
         }
     };
 
+
     @Override
     protected void onResume() {
         super.onResume();
         cmdManager.start();
     }
+
 
     @Override
     protected void onStop() {
