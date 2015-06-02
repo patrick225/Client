@@ -154,7 +154,7 @@ public class MainActivity_Wheel extends Activity {
 
         int veloLeft;
         double ratio = getVeloRatio(angle);
-        if (angle > 0) {
+        if (angle >= 0) {
                 veloLeft = (int) (power.getProgress() / ratio);
         } else {
             veloLeft = power.getProgress();
@@ -177,8 +177,9 @@ public class MainActivity_Wheel extends Activity {
 
     private double getVeloRatio (double angle) {
 
-        double ratio = (angle / 60) + 1;
-        return ratio;
+        double ratio = (Math.abs(angle) / 60) + 1;
+
+        return Math.min(ratio, 1.5);
     }
 
 }
